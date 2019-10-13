@@ -73,7 +73,7 @@
   <div class="container">
     <!-- For iOS -->
     <video src="https://static.shikehuyu.com/vincent/wx-video-demo/movie.mp4"
-      playsinline webkit-playsinline loop autoplay>
+      playsinline webkit-playsinline loop>
     </video>
     <!-- For Android -->
     <canvas></canvas>
@@ -115,7 +115,7 @@
     initVideo()
     // 自动播放
     document.addEventListener('WeixinJSBridgeReady', () => {
-      if (player.paused) player.play()
+      player.play()
     })
   }
   </script>
