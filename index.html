@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>微信H5视频行内autoplay</title>
+  <script src="https://static.shikehuyu.com/lib/jsmpeg.min.js"></script>
+  <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <style>
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw;
+    overflow: hidden;
+  }
+  .desc {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    width: 80vw;
+    transform: translate(-50%);
+    font-size: 13px;
+    text-align: center;
+    line-height: 28px;
+    color: #333;
+  }
+  a {
+    text-decoration: none;
+    color: rgb(21, 107, 206);
+  }
+  video {
+    width: 80vw;
+    height: 80vw;
+    object-fit: contain;
+    object-position: center;
+    display: none;
+  }
+  canvas {
+    display: none;
+  }
+
+  @keyframes danmu {
+    from {
+      transform: translate(80vw, 0);
+    }
+    to {
+      transform: translate(-100%, 0);
+    }
+  }
+  .danmu {
+    position: absolute;
+    top: 20%;
+    color: white;
+    font-size: 14px;
+    left: 0;
+    z-index: 1;
+    animation-name: danmu;
+    animation-duration: 4s;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- For iOS -->
+    <video src="https://static.shikehuyu.com/vincent/wx-video-demo/movie.mp4"
+      playsinline webkit-playsinline loop>
+    </video>
+    <!-- For Android -->
+    <canvas></canvas>
+    <!-- 示例弹幕 -->
+    <div class="danmu">示例弹幕，表示你可以放任意UI在视频上面</div>
+  </div>
+
+  <div class="desc">
+    <a href="">《从零到一：实现微信H5视频行内autoplay》</a>
+    <div>Produced by VincentPat</div>
+  </div>
+
+  <script>
+  var player
+  var video = document.querySelector('video')
+  var canvas = document.querySelector('canvas')
+
+  function initVideo() {
+    var isAndroid = window.navigator.userAgent.match(/android/ig)
+    if (isAndroid) { // 安卓
+      var src = "https://static.shikehuyu.com/vincent/wx-video-demo/movie.ts"
+      player = new JSMpeg.Player(src, {
+        canvas: canvas,
+        autoplay: true,
+        progressive: false,
+        loop: true,
+        onVideoDecode: function() {
+          canvas.style.display = 'block'
+          canvas.style.height = 80 / (canvas.width / canvas.height) + "vw"
+        }
+      })
+    } else { // iOS
+      player = video
+      video.style.display = 'block'
+    }
+  }
+
+  window.onload = function() {
+    initVideo()
+    // 自动播放
+    document.addEventListener('WeixinJSBridgeReady', () => {
+      player.play()
+    })
+  }
+  </script>
+</body>
+</html>
